@@ -1,16 +1,16 @@
 import nl.edegier.RestBuilder.*
 
 fun main(args: Array<String>) : Unit {
-	runScript()
+	createUserTestScript()
 }
 
-fun runScript() = 
+fun createUserTestScript() = 
 testScript {
-	post("/user/"){
-		params("email" to "erwin@edegier.nl","firstname" to "Erwin","lastname" to "de Gier")
+	post("/user/", params("email" to "erwin@edegier.nl","firstname" to "Erwin","lastname" to "de Gier")){
+		expectedResult("OK")
 	}
 	get("/user/erwin"){
-		params()
+		expectedResult("Erwin")
 	}
-	run()
+	
 }
