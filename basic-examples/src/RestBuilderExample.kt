@@ -10,7 +10,6 @@ testScript {
 		expectedResult("OK")
 	}
 	get("/user/erwin"){
-		expectedResult("Erwin")
-	}
-	
+		expectedResult(params("email" to "erwin@edegier.nl","firstname" to "Erwin","lastname" to "de Gier"))
+	}	
 }

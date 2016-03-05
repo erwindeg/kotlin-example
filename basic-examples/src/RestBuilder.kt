@@ -5,7 +5,7 @@ enum class Method {
 }
 
 class TestScript {
-	fun get(url: String, params: Map<String,String> = mapOf(), validate : RestCall.() -> Unit) : RestCall = restCall(Method.POST,url,params,validate)
+	fun get(url: String, params: Map<String,String> = mapOf(), validate : RestCall.() -> Unit) : RestCall = restCall(Method.GET,url,params,validate)
 
 	fun post(url: String, params: Map<String,String> = mapOf(), validate : RestCall.() ->  Unit ) : RestCall = restCall(Method.POST,url,params,validate)
 
@@ -22,14 +22,23 @@ class TestScript {
 }
 
 class RestCall(val method : Method, val url : String, val params :  Map<String,String> = mapOf<String,String>()) {
-	var result : String = ""
+	var result : Any = ""
 	fun performCall() {
-		//TODO: mock data from this call
-		println("method: $method url: $url params: $params")
-		result = "OK"
+		when(method) {
+			Method.GET -> this.result = MockRestClient.get(url,params)
+			Method.POST -> this.result = MockRestClient.post(url,params) 
+		}
+		
 	}
 
 	fun expectedResult(expected : String) {
+		if(expected == this.result)
+			println("test passed with result: $result")
+			else
+			println("test failed, expected: $expected, actual: $result ")
+	}
+	
+	fun expectedResult(expected : Map<String,String>) {
 		if(expected == this.result)
 			println("test passed with result: $result")
 			else
@@ -41,4 +50,20 @@ fun testScript(init : TestScript.() -> Unit ) : TestScript {
 	val testScript = TestScript()
 	testScript.init();
 	return testScript;
+}
+
+
+object MockRestClient{
+	var params : Map<String,String> = mapOf()
+	
+	fun get(url : String ,params : Map<String,String>) : Map<String,String> {
+		println("method: get url: $url params: $params")
+		return params
+	}
+	
+	fun post(url : String ,params : Map<String,String>) : String{
+		println("method: post url: $url params: $params")
+		this.params=params
+		return "OK"
+	}
 }
